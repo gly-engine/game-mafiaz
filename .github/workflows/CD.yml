@@ -18,9 +18,13 @@ jobs:
       - 
         uses: actions/checkout@v4
       -
-        run: npm install
+        uses: leafo/gh-actions-lua@v10
+        with:
+          luaVersion: '5.4'
       -
-        run: npm run build
+        run: wget get.gamely.com.br/cli.lua
+      -
+        run: lua cli.lua build-html src/game.lua --atob --fengari
       -
         uses: actions/configure-pages@v3
       -
