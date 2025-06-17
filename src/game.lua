@@ -18,9 +18,9 @@ end
 
 local P = {
     meta={
-        title='Hello world',
+        title='MafiaZ',
         author='RodrigoDornelles',
-        description='say hello to the world!',
+        description='extremely generic game about zombies and mafia to demonstrate gly engine.',
         version='1.0.0'
     },
     assets = assets,
