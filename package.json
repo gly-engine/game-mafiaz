@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "build-love": "gly-cli build --core love src/game.lua",
+    "build": "gly-cli build-html src/game.lua"
+  },
+  "devDependencies": {
+    "@gamely/gly-cli": "^0.1.2"
+  }
+}
