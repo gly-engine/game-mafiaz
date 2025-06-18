@@ -1,15 +1,20 @@
 local assets = require('src/shared/assets')
 local Player = require('src/entity/Player')
+local World = require('src/entity/World')
 
 local function init(std, game)
     game.player = Player()
+    game.world = World()
 end
 
 local function loop(std, game)
+    game.world.parallax:rotate(std.key.axis.x)
+    game.world:update(std)
     game.player:update(std)
 end
 
 local function draw(std, game)
+    game.world:draw(std)
     game.player:draw(std)
 end
 

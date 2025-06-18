@@ -1,4 +1,9 @@
 return {
+    'assets/city_1_1.png:city_1_1.png',
+    'assets/city_1_2.png:city_1_2.png',
+    'assets/city_1_3.png:city_1_3.png',
+    'assets/city_1_4.png:city_1_4.png',
+    'assets/city_1_5.png:city_1_5.png',
     'assets/player_1_0.png:player_1_0.png',
     'assets/player_1_1.png:player_1_1.png',
     'assets/player_1_2.png:player_1_2.png',
