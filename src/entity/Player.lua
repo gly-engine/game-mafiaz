@@ -78,14 +78,12 @@ local function update(self, std)
     self.anim:update(std.delta)
 end
 
-local function draw(self, std)
-    local x, y = self.pos.x, self.pos.y
-    std.draw.image(self.anim:get_frame_name(), x, y)
+local function draw(self, callback)
+    callback(self.anim:get_frame_name())
 end
 
 local function Player()
     local anim = Animator.new()
-    local pos = {x=128, y=500}
     local sta = {
         anim:add('idle', 0, 5, 600, 'player_4_%d.png'),
         anim:add('walk1', 0, 9, 600, 'player_10_%d.png'),
@@ -103,7 +101,6 @@ local function Player()
         fsm_state = {0, 0, 0},
         fsm_time = {0, 0, 0},
         state = 0,
-        pos = pos,
         state_to_anim = sta,
         update = update,
         anim = anim,
