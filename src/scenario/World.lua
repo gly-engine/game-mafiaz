@@ -8,10 +8,11 @@ World.__index = World
 function World:new(configs)
     local self = setmetatable({}, World)
     self.state = 0
-    self.camera_x = 0
-    self.camera_y = 0
     self.world_size = 1000
     self.player = Player()
+    self.pos_player = 80
+    self.pos_camera = 0
+    self.pos_zombie = {}
     self.zombie_count = configs.zombies or 0
     return self
 end
@@ -29,15 +30,17 @@ end
 function World:spawnZombies(std)
     local index = 1
     self.zombies = {}
-    self.zombies_pos = {}
     while index <= self.zombie_count do
         self.zombies[index] = Zombie()
-        self.zombies_pos[index] = std.math.random((std.app.width/3) * 2, self.world_size)
+        self.pos_zombie[index] = std.math.random((std.app.width/3) * 2, self.world_size)
         index = index + 1
     end
 end
 
 function World:update(std)
+    local deadzone_1 = std.app.width / 16
+    local deadzone_2 = deadzone_1 * 4
+
     if self.state == 0 then
         self:spawnZombies(std)
         self:loadParallax(std)
@@ -52,6 +55,26 @@ function World:update(std)
     std.array.from(self.zombies):each(function(zombie)
         zombie:update(std)
     end)
+
+    self.player:action(function(walking, attacking)
+        if walking ~= 0 then
+            self.pos_player = self.pos_player + walking
+
+            local new_position_camera = self.pos_camera
+            local position_player_in_cam = self.pos_player - self.pos_camera
+
+            if position_player_in_cam < deadzone_1 then
+                new_position_camera = self.pos_player - deadzone_1
+            elseif position_player_in_cam > deadzone_2 then
+                new_position_camera = self.pos_player - deadzone_2
+            end
+
+            if new_position_camera ~= self.pos_camera then
+                self.pos_camera = new_position_camera
+                self.parallax:rotate(walking)
+            end
+        end
+    end)
 end
 
 function World:draw(std)
@@ -62,12 +85,12 @@ function World:draw(std)
     end)
 
     self.player:draw(function(src)
-        std.draw.image(src, 80, base_y)
+        std.draw.image(src, self.pos_player - self.pos_camera, base_y)
     end)
 
     std.array.from(self.zombies):each(function(zombie, index)
         zombie:draw(function(src)
-            std.draw.image(src, self.zombies_pos[index], base_y)
+            std.draw.image(src, self.pos_zombie[index] - self.pos_camera, base_y)
         end)
     end)
 end

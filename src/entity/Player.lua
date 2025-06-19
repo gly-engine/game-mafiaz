@@ -78,6 +78,19 @@ local function update(self, std)
     self.anim:update(std.delta)
 end
 
+local function action(self, callback)
+    local state = self.fsm_state[1]
+    local anim = self.state_to_anim[state]
+    local walking = ({walk1 = 1, walk2 = -1, run = 2})[anim] or 0
+    local attacking = ({attack1 = 1, attack2 = 2})[anim] or 0
+    
+    if attacking ~= 0 and not self.anim:get_frame() ~= 1 then
+        attacking = 0
+    end
+
+    callback(walking, attacking)
+end
+
 local function draw(self, callback)
     callback(self.anim:get_frame_name())
 end
@@ -85,10 +98,10 @@ end
 local function Player()
     local anim = Animator.new()
     local sta = {
-        anim:add('idle', 0, 5, 600, 'player_4_%d.png'),
-        anim:add('walk1', 0, 9, 600, 'player_10_%d.png'),
-        anim:add('walk2', 9, 0, 700, 'player_10_%d.png'),
-        anim:add('run', 0, 9, 600, 'player_8_%d.png'),
+        anim:add('idle', 0, 5, 850, 'player_4_%d.png'),
+        anim:add('walk1', 0, 9, 850, 'player_10_%d.png'),
+        anim:add('walk2', 9, 0, 850, 'player_10_%d.png'),
+        anim:add('run', 0, 9, 800, 'player_8_%d.png'),
         anim:add('jump', 2, 9, 600, 'player_6_%d.png'),
         anim:add('hurt', 0, 4, 600, 'player_3_%d.png'),
         anim:add('death', 0, 4, 600, 'player_2_%d.png'),
@@ -103,6 +116,7 @@ local function Player()
         state = 0,
         state_to_anim = sta,
         update = update,
+        action = action,
         anim = anim,
         draw = draw
     }
