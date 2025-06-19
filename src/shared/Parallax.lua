@@ -54,6 +54,7 @@ end
 
 function Parallax:draw(callback)
   local accumulated_offset = 0
+  local ratio = math.min(1, math.max(0, (self.viewport_h - self.tile_h) / (self.total_offset_y)))
   
   for i, layer in ipairs(self.layers) do
     local tw = self.tile_w
@@ -77,8 +78,8 @@ function Parallax:draw(callback)
       local src = string.format(layer.pattern, id)
       callback(src, start_x + j * tw, vy + accumulated_offset)
     end
-    
-    accumulated_offset = accumulated_offset + layer.max_offset_y
+
+    accumulated_offset = accumulated_offset + (layer.max_offset_y * ratio)
   end
 end
 
