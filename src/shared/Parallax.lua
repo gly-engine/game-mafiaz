@@ -81,6 +81,7 @@ function Parallax:draw(callback)
 
     accumulated_offset = accumulated_offset + (layer.max_offset_y * ratio)
   end
+  return self.tile_h + accumulated_offset
 end
 
 return Parallax

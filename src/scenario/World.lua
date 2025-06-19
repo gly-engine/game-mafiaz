@@ -78,11 +78,11 @@ function World:update(std)
 end
 
 function World:draw(std)
-    local base_y = std.app.height - 180
-
-    self.parallax:draw(function(src, x, y)
+    local paralax_height = self.parallax:draw(function(src, x, y)
         std.draw.image(src, x, y)
     end)
+
+    local base_y = std.math.max(paralax_height - 128, std.app.height - 180)
 
     self.player:draw(function(src)
         std.draw.image(src, self.pos_player - self.pos_camera, base_y)
