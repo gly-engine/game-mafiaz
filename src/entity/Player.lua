@@ -6,7 +6,6 @@ local Animator = require('src/shared/Animator')
 --! state 2 as "forward"
 --! state 3 as "backward"
 --! state 4 as "running"
---! state 5 as "jumping"
 --! state 6 as "hurting"
 --! state 7 as "deathing"
 --! state 8 as "attack1"
@@ -50,10 +49,6 @@ local function update(self, std)
         new_state = 4
     elseif cur_state == 4 and std.key.press.left then
         new_state = 1
-    elseif cur_state == 4 and std.key.press.up then
-        new_state = 5
-    elseif cur_state == 5 and self.anim:is_last_frame() then
-        new_state = 4
     elseif ((old_state == 8 and (std.milis - old_state_time) < 600) or cur_state == 8) and std.key.press.down then
         new_state = 10
     elseif cur_state == 1 and (std.key.press.a or std.key.press.up) then
@@ -92,7 +87,9 @@ local function action(self, callback)
 end
 
 local function draw(self, callback)
-    callback(self.anim:get_frame_name())
+    if self.anim:is_playing() then
+        callback(self.anim:get_frame_name())
+    end
 end
 
 local function Player()
@@ -102,7 +99,7 @@ local function Player()
         anim:add('walk1', 0, 9, 850, 'player_10_%d.png'),
         anim:add('walk2', 9, 0, 850, 'player_10_%d.png'),
         anim:add('run', 0, 9, 800, 'player_8_%d.png'),
-        anim:add('jump', 2, 9, 600, 'player_6_%d.png'),
+        'jump',
         anim:add('hurt', 0, 4, 600, 'player_3_%d.png'),
         anim:add('death', 0, 4, 600, 'player_2_%d.png'),
         anim:add('attack1', 0, 2, 350, 'player_1_%d.png'),

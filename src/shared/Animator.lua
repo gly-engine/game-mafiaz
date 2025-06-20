@@ -28,7 +28,7 @@ end
 
 function Animator:play(name)
   if self.current ~= name then
-    self.current = name
+    self.current = self.animations[name] and name
     self.time = 0
     self.frame = 0
     self.old_frame = -1
@@ -59,6 +59,13 @@ end
 
 function Animator:get_frame()
   return self.frame
+end
+
+function Animator:is_playing(name)
+  if not name then
+    return self.current ~= nil
+  end
+  return self.current == name
 end
 
 function Animator:is_first_display_frame()
