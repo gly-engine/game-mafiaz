@@ -41,6 +41,7 @@ function World:update(std)
     local deadzone_1 = std.app.width / 16
     local deadzone_2 = deadzone_1 * 4
 
+
     if self.state == 0 then
         self:spawnZombies(std)
         self:loadParallax(std)
@@ -73,6 +74,17 @@ function World:update(std)
                 self.pos_camera = new_position_camera
                 self.parallax:rotate(walking)
             end
+        end
+        if attacking ~= 0 then
+            local hited = false
+            local fists_range = 50
+            local shoot_range = std.app.width - (self.pos_player - self.pos_camera)
+            local ranges = {self.pos_player + fists_range, self.pos_player + shoot_range}
+            std.array.from(self.zombies):each(function(zombie, index)
+                if self.pos_zombie[index] <= ranges[attacking] and not hited then
+                    hited = zombie:hit(self.player)
+                end
+            end)
         end
     end)
 end

@@ -5,6 +5,13 @@ local function update(self, std)
     
     if self.state == 0 then
         new_state = 4
+    elseif self.state == 2 and self.anim:is_last_frame() then
+        new_state = 6
+    elseif self.state == 3 and self.anim:is_last_frame() then
+        self.lifes = self.lifes - 1
+        new_state = 4
+    elseif self.state == 4 and self.lifes <= 0 then
+        new_state = 2
     end
 
     if new_state ~= self.state then
@@ -13,6 +20,13 @@ local function update(self, std)
     end
 
     self.anim:update(std.delta)
+end
+
+local function hit(self)
+    if self.state == 6 or self.state == 2 or self.state == 3 then return false end
+    self.state = 3
+    self.anim:play(self.state_to_anim[self.state])
+    return true
 end
 
 local function draw(self, callback)
@@ -31,10 +45,12 @@ local function Player()
     }
     
     return {
+        lifes = 3,
         state = 0,
         state_to_anim = sta,
         update = update,
         anim = anim,
+        hit = hit,
         draw = draw
     }
 end
