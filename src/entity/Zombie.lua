@@ -36,12 +36,12 @@ end
 local function Player()
     local anim = Animator.new()
     local sta = {
-        anim:add('attack', 4, 0, 600, 'zombie_1_%d.png'),
-        anim:add('dying', 4, 0, 800, 'zombie_2_%d.png'),
-        anim:add('hurt', 3, 0, 800, 'zombie_3_%d.png'),
-        anim:add('idle', 5, 0, 800, 'zombie_4_%d.png'),
-        anim:add('walk', 9, 0, 800, 'zombie_5_%d.png'),
-        anim:add('death', 0, 0, 800, 'zombie_2_%d.png'),
+        anim:add('attack', 0, 4, 600, 'zombie_1_%d.png'),
+        anim:add('dying', 0, 4, 600, 'zombie_2_%d.png'),
+        anim:add('hurt', 0, 3, 500, 'zombie_3_%d.png'),
+        anim:add('idle', 0, 5, 600, 'zombie_4_%d.png'),
+        anim:add('walk', 0, 9, 800, 'zombie_5_%d.png'),
+        anim:add('death', 4, 4, 600, 'zombie_2_%d.png'),
     }
     
     return {
