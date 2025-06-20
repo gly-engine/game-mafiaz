@@ -84,14 +84,8 @@ local function action(self, callback)
     local walking = ({walk1 = 1, walk2 = -1, run = 2})[anim] or 0
     local attacking = ({attack1 = 1, attack2 = 2})[anim] or 0
     
-    if attacking ~= 0 then
-        if self.anim:get_frame() == 1 and not self.attacked then
-            self.attacked = true
-        else
-            attacking = 0
-        end
-    else
-        self.attacked = false
+    if attacking ~= 0 and (self.anim:get_frame() ~= 1 or not self.anim:is_first_display_frame()) then
+        attacking = 0
     end
 
     callback(walking, attacking)
