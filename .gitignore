@@ -5,6 +5,6 @@ dist
 cli.lua
 carousel
 node_modules
-tmm.xml
+tmm-*.xml
 *-lock.json
 *.lock
