@@ -1,4 +1,3 @@
-local Player = require("src/entity/Player")
 local Zombie = require("src/entity/Zombie")
 local Parallax = require("src/shared/Parallax")
 
@@ -9,7 +8,7 @@ function World:new(configs)
     local self = setmetatable({}, World)
     self.state = 0
     self.world_size = 1000
-    self.player = Player()
+    self.player = configs.player
     self.pos_player = 80
     self.pos_camera = 0
     self.pos_zombie = {}

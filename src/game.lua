@@ -1,8 +1,15 @@
 local assets = require('src/shared/assets')
 local World = require('src/scenario/World')
+local Player = require('src/entity/Player')
+local PlayerGamepad = require('src/control/PlayerGamepad')
 
 local function init(std, game)
+    local controller = PlayerGamepad:new()
+    local player = Player:new({
+        controller = controller,
+    })
     game.world = World:new({
+        player = player,
         zombies = 5
     })
 end

@@ -1,5 +1,8 @@
 local Animator = require('src/shared/Animator')
 
+local Player = {}
+Player.__index = Player
+
 --! @startuml
 --! hide empty description
 --! state 1 as "idle1"
@@ -32,31 +35,30 @@ local Animator = require('src/shared/Animator')
 --! 7 --> [*]
 --! @enduml
 
-local function update(self, std)
-    local old_state, old_state_time = self.fsm_state[3], self.fsm_time[3]
-    local cur_state = self.fsm_state[1]
+function Player:update(std)
+    self.controller:tick(std)
+
+    local cur_state = self:get_state()
     local new_state = cur_state
 
     if cur_state == 0 then
         new_state = 1
-    elseif cur_state == 1 and std.key.press.right then
+    elseif cur_state == 1 and self.controller:press_forward() then
         new_state = 2
-    elseif cur_state == 1 and std.key.press.left then
+    elseif cur_state == 1 and self.controller:press_backward() then
         new_state = 3
-    elseif (cur_state == 2 or cur_state == 3) and std.key.axis.x == 0 then
-        new_state = 1
-    elseif ((old_state == 3 and (std.milis - old_state_time) < 600) or cur_state == 3) and std.key.press.right then
+    elseif (cur_state >= 1 and cur_state <= 3) and self.controller:press_run() then
         new_state = 4
-    elseif cur_state == 4 and std.key.press.left then
+    elseif (cur_state == 2 or cur_state == 3) and self.controller:press_stop() then
         new_state = 1
-    elseif ((old_state == 8 and (std.milis - old_state_time) < 600) or cur_state == 8) and std.key.press.down then
+    elseif cur_state == 4 and self.controller:press_backward() then
+        new_state = 1
+    elseif (cur_state <= 4 or cur_state == 8) and self.controller:press_reload() then
         new_state = 10
-    elseif cur_state == 1 and (std.key.press.a or std.key.press.up) then
+    elseif cur_state == 1 and self.controller:press_attack1() then
         new_state = 8
-    elseif cur_state == 1 and (std.key.press.b or std.key.press.down) then
+    elseif cur_state == 1 and self.controller:press_attack2() then
         new_state = 9
-    elseif cur_state == 1 and std.key.press.c then
-        new_state = 10
     elseif (cur_state == 8 or cur_state == 9) and self.anim:is_last_frame() then
         new_state = 1
     elseif cur_state == 10 and self.anim:is_last_frame() then
@@ -64,17 +66,23 @@ local function update(self, std)
     end
 
     if cur_state ~= new_state then
-        self.fsm_state[3], self.fsm_time[3] = self.fsm_state[2], self.fsm_time[2]
-        self.fsm_state[2], self.fsm_time[2] = self.fsm_state[1], self.fsm_time[1]
-        self.fsm_state[1], self.fsm_time[1] = new_state, std.milis
+        self.state = new_state
         self.anim:play(self.state_to_anim[new_state])
     end
 
     self.anim:update(std.delta)
 end
 
-local function action(self, callback)
-    local state = self.fsm_state[1]
+function Player:get_state()
+    return self.state
+end
+
+function Player:is_death()
+    return self.state == 7
+end
+
+function Player:action(callback)
+    local state = self:get_state()
     local anim = self.state_to_anim[state]
     local walking = ({walk1 = 1, walk2 = -1, run = 2})[anim] or 0
     local attacking = ({attack1 = 1, attack2 = 2})[anim] or 0
@@ -86,13 +94,14 @@ local function action(self, callback)
     callback(walking, attacking)
 end
 
-local function draw(self, callback)
+function Player:draw(callback)
     if self.anim:is_playing() then
         callback(self.anim:get_frame_name())
     end
 end
 
-local function Player()
+function Player:new(configs)
+    local self = setmetatable({}, Player)
     local anim = Animator.new()
     local sta = {
         anim:add('idle', 0, 5, 850, 'player_4_%d.png'),
@@ -106,17 +115,13 @@ local function Player()
         anim:add('attack2', 0, 3, 300, 'player_9_%d.png'),
         anim:add('reload', 0, 16, 1200, 'player_7_%d.png'),
     }
-    
-    return {
-        fsm_state = {0, 0, 0},
-        fsm_time = {0, 0, 0},
-        state = 0,
-        state_to_anim = sta,
-        update = update,
-        action = action,
-        anim = anim,
-        draw = draw
-    }
+
+    self.state_to_anim = sta
+    self.state = 0
+    self.anim = anim
+    self.controller = configs.controller
+
+    return self
 end
 
 return Player
