@@ -3,32 +3,8 @@ local World = require('src/scenario/World')
 local Player = require('src/entity/Player')
 local PlayerGamepad = require('src/control/PlayerGamepad')
 
-local function init(std, game)
-    local controller = PlayerGamepad:new()
-    local player = Player:new({
-        controller = controller,
-    })
-    game.world = World:new({
-        player = player,
-        zombies = 5
-    })
-end
-
-local function loop(std, game)
-    game.world:update(std)
-end
-
-local function draw(std, game)
-    game.world:draw(std)
-end
-
-local function exit(std, game)
-    game.world:delete()
-    game.world = nil
-end
-
-local P = {
-    meta={
+local App = {
+    meta = {
         title='MafiaZ',
         author='RodrigoDornelles',
         description='extremely generic game about zombies and mafia to demonstrate gly engine.',
@@ -38,12 +14,31 @@ local P = {
         require = 'math.random'
     },
     assets = assets,
-    callbacks={
-        init=init,
-        loop=loop,
-        draw=draw,
-        exit=exit
-    }
+    callbacks = {}
 }
 
-return P;
+function App.callbacks:init(std)
+    local controller = PlayerGamepad:new()
+    local player = Player:new({
+        controller = controller,
+    })
+    self.world = World:new({
+        player = player,
+        zombies = 5
+    })
+end
+
+function App.callbacks:loop(std)
+    self.world:update(std)
+end
+
+function App.callbacks:draw(std)
+    self.world:draw(std)
+end
+
+function App.callbacks:exit(std)
+    self.world:delete()
+    self.world = nil
+end
+
+return App;
