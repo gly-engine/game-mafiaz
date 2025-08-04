@@ -1,9 +1,10 @@
 {
   "scripts": {
+    "build-ginga": "gly-cli build-ginga --target ncl src/game.lua --enterprise --bundler",
     "build-love": "gly-cli build --core love src/game.lua",
     "build": "gly-cli build-html src/game.lua"
   },
   "devDependencies": {
-    "@gamely/gly-cli": "^0.1.2"
+    "@gamely/gly-cli": "^0.2.1"
   }
 }

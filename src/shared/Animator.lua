@@ -5,8 +5,10 @@ function Animator.new()
   return setmetatable({
     animations = {},
     current = nil,
+    count = 0,
     time = 0,
     frame = 0,
+    old_frame = -1,
   }, Animator)
 end
 
@@ -26,9 +28,10 @@ end
 
 function Animator:play(name)
   if self.current ~= name then
-    self.current = name
+    self.current = self.animations[name] and name
     self.time = 0
     self.frame = 0
+    self.old_frame = -1
   end
 end
 
@@ -46,10 +49,28 @@ function Animator:update(dt_ms)
   else
     self.frame = anim.start - offset
   end
+  if self.frame ~= self.old_frame then
+    self.old_frame = self.frame
+    self.count = 1
+  else
+    self.count = self.count + 1
+  end
 end
 
 function Animator:get_frame()
   return self.frame
+end
+
+function Animator:is_playing(name)
+  if not name then
+    return self.current ~= nil
+  end
+  return self.current == name
+end
+
+function Animator:is_first_display_frame()
+  if not self.current then return false end
+  return self.count == 1
 end
 
 function Animator:is_last_frame()
