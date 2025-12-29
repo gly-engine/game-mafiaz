@@ -5,6 +5,6 @@
     "build": "gly-cli build-html src/game.lua"
   },
   "devDependencies": {
-    "@gamely/gly-cli": "^0.2.1"
+    "@gamely/gly-cli": "^0.3.8"
   }
 }
